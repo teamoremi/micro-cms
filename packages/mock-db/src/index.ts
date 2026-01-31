@@ -1,4 +1,4 @@
-import { DataProvider, Schema, Entity } from '@micro-cms/types';
+import { CmsModule, DataProvider, Schema } from '@micro-cms/types';
 
 const MOCK_SCHEMA: Schema = {
   entities: [
@@ -40,7 +40,7 @@ export class MockDataProvider implements DataProvider {
     return Promise.resolve(MOCK_SCHEMA);
   }
 
-  async find(entity: string, query?: any): Promise<any[]> {
+  async find(entity: string): Promise<any[]> {
     return Promise.resolve(MOCK_DATA[entity] || []);
   }
 
@@ -52,12 +52,30 @@ export class MockDataProvider implements DataProvider {
   }
 
   async update(entity: string, id: any, data: any): Promise<any> {
-    // Simplified update
     return Promise.resolve(data);
   }
 
   async delete(entity: string, id: any): Promise<any> {
-    // Simplified delete
     return Promise.resolve({ success: true });
   }
 }
+
+const mockDbModule: CmsModule = {
+  manifest: {
+    name: '@micro-cms/mock-db',
+    version: '0.0.1',
+    provides: ['database-adapter', 'introspection'],
+    publishes: {
+      'database.schema': 'The current database schema'
+    }
+  },
+  async load({ runtime, context }) {
+    const provider = new MockDataProvider();
+    runtime.register('database-adapter', provider);
+    
+    const schema = await provider.introspect();
+    context.publish('database.schema', schema);
+  }
+};
+
+export default mockDbModule;
