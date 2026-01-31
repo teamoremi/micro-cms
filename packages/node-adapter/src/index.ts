@@ -1,17 +1,21 @@
-import { CmsModule, CmsContext, DataProvider, Schema, Entity } from '@micro-cms/types';
+import { CmsModule, CmsContext, DataProvider, Schema } from '@micro-cms/types';
 
 export interface NodeAdapterConfig {
   apiUrl: string;
-  token: string;
+  token?: string;
 }
 
-export const NodeAdapter = (config: NodeAdapterConfig): CmsModule & { provider: DataProvider } => {
-  const fetchApi = async (path: string, options: RequestInit = {}) => {
-    const response = await fetch(`${config.apiUrl}${path}`, {
+export class NodeDataProvider implements DataProvider {
+  constructor(private config: NodeAdapterConfig) {}
+
+  private async fetchApi(path: string, options: RequestInit = {}) {
+    const token = localStorage.getItem('adminToken') || this.config.token;
+    
+    const response = await fetch(`${this.config.apiUrl}${path}`, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${config.token}`,
+        'Authorization': `Bearer ${token}`,
         ...options.headers,
       },
     });
@@ -21,52 +25,70 @@ export const NodeAdapter = (config: NodeAdapterConfig): CmsModule & { provider: 
     }
 
     return response.json();
-  };
+  }
 
-  const provider: DataProvider = {
-    introspect: async (): Promise<Schema> => {
-      // This endpoint will be implemented in node_api
-      const response = await fetchApi('/admin/schema');
-      return {
-        entities: Object.entries(response.resources).map(([name, def]: [string, any]) => ({
-          name,
-          fields: def.fields,
-        })),
-      };
-    },
+  async introspect(): Promise<Schema> {
+    const response = await this.fetchApi('/admin/schema');
+    return {
+      entities: Object.entries(response.resources).map(([name, def]: [string, any]) => ({
+        name,
+        fields: def.fields,
+        displayField: def.displayField,
+        primaryKey: def.primaryKey,
+        label: def.label,
+      })),
+    };
+  }
 
-    find: async (entity: string, query?: any) => {
-      const queryString = query ? '?' + new URLSearchParams(query).toString() : '';
-      return fetchApi(`/admin/resources/${entity}${queryString}`);
-    },
+  async find(entity: string, query?: any) {
+    const queryString = query ? '?' + new URLSearchParams(query).toString() : '';
+    const response = await this.fetchApi(`/admin/resources/${entity}${queryString}`);
+    return response.data;
+  }
 
-    create: async (entity: string, data: any) => {
-      return fetchApi(`/admin/resources/${entity}`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
-    },
+  async create(entity: string, data: any) {
+    return this.fetchApi(`/admin/resources/${entity}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
 
-    update: async (entity: string, id: any, data: any) => {
-      return fetchApi(`/admin/resources/${entity}/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-      });
-    },
+  async update(entity: string, id: any, data: any) {
+    return this.fetchApi(`/admin/resources/${entity}/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
 
-    delete: async (entity: string, id: any) => {
-      return fetchApi(`/admin/resources/${entity}/${id}`, {
-        method: 'DELETE',
-      });
-    },
-  };
+  async delete(entity: string, id: any) {
+    return this.fetchApi(`/admin/resources/${entity}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+}
 
-  return {
+const nodeAdapterModule: CmsModule = {
+  manifest: {
     name: '@micro-cms/node-adapter',
-    setup: (context: CmsContext) => {
-      context.state.dataProvider = provider;
-      console.log('NodeAdapter initialized');
-    },
-    provider, // Expose provider directly for easier usage in some contexts
-  };
+    version: '0.0.1',
+    provides: ['database-adapter', 'introspection'],
+    publishes: {
+      'database.schema': 'The remote database schema'
+    }
+  },
+  async load(context: CmsContext) {
+    const config = context.config as NodeAdapterConfig;
+    const provider = new NodeDataProvider(config);
+    
+    context.runtime.register('database-adapter', provider);
+    
+    try {
+      const schema = await provider.introspect();
+      context.context.publish('database.schema', schema);
+    } catch (error) {
+      console.error('NodeAdapter failed to introspect schema:', error);
+    }
+  }
 };
+
+export default nodeAdapterModule;
