@@ -85,6 +85,19 @@ export class App {
     return this;
   }
 
+  get context() {
+    return {
+      get: (k: string) => this.stateManager.get(k),
+      subscribe: (k: string, c: Function) => this.stateManager.subscribe(k, c)
+    };
+  }
+
+  get runtime() {
+    return {
+      getCapability: <T = any>(cap: string): T | undefined => this.capabilities[cap]
+    };
+  }
+
   async start() {
     for (const mod of this.modules) {
       console.log(`Loading module: ${mod.manifest.name} (v${mod.manifest.version})`);

@@ -28,7 +28,7 @@ export class NodeDataProvider implements DataProvider {
   }
 
   async introspect(): Promise<Schema> {
-    const response = await this.fetchApi('/admin/schema');
+    const response = await this.fetchApi('/api/admin/schema');
     return {
       entities: Object.entries(response.resources).map(([name, def]: [string, any]) => ({
         name,
@@ -42,26 +42,26 @@ export class NodeDataProvider implements DataProvider {
 
   async find(entity: string, query?: any) {
     const queryString = query ? '?' + new URLSearchParams(query).toString() : '';
-    const response = await this.fetchApi(`/admin/resources/${entity}${queryString}`);
+    const response = await this.fetchApi(`/api/admin/resources/${entity}${queryString}`);
     return response.data;
   }
 
   async create(entity: string, data: any) {
-    return this.fetchApi(`/admin/resources/${entity}`, {
+    return this.fetchApi(`/api/admin/resources/${entity}`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async update(entity: string, id: any, data: any) {
-    return this.fetchApi(`/admin/resources/${entity}/${id}`, {
+    return this.fetchApi(`/api/admin/resources/${entity}/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
   }
 
   async delete(entity: string, id: any) {
-    return this.fetchApi(`/admin/resources/${entity}/${id}`, {
+    return this.fetchApi(`/api/admin/resources/${entity}/${id}`, {
       method: 'DELETE',
     });
   }
