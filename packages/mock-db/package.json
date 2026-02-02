@@ -12,9 +12,10 @@
     }
   },
   "dependencies": {
-    "@micro-cms/types": "workspace:*"
+    "@micro-cms/types": "0.0.1"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepare": "pnpm build"
   }
 }
