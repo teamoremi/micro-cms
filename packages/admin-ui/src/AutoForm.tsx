@@ -9,7 +9,7 @@ interface AutoFormProps {
 }
 
 export const AutoForm: React.FC<AutoFormProps> = ({ entity, initialData = {}, onSubmit }) => {
-  const [formData, setFormData] = useState<any>(initialData);
+  const [formData, setFormData] = useState<any>(initialData || {});
 
   // Update form data if initialData changes
   useEffect(() => {
