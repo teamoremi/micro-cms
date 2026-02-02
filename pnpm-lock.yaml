@@ -61,29 +61,41 @@ importers:
   packages/admin-ui:
     dependencies:
       '@micro-cms/types':
-        specifier: workspace:*
-        version: link:../types
+        specifier: ^0.0.2
+        version: 0.0.2
       react:
         specifier: '>=18'
         version: 18.3.1
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
 
   packages/core:
     dependencies:
       '@micro-cms/types':
-        specifier: workspace:*
-        version: link:../types
+        specifier: ^0.0.2
+        version: 0.0.2
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
 
   packages/mock-db:
     dependencies:
       '@micro-cms/types':
-        specifier: workspace:*
-        version: link:../types
+        specifier: ^0.0.2
+        version: 0.0.2
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
 
   packages/node-adapter:
     dependencies:
       '@micro-cms/types':
-        specifier: workspace:*
-        version: link:../types
+        specifier: ^0.0.2
+        version: 0.0.2
     devDependencies:
       typescript:
         specifier: ^5.0.0
@@ -331,6 +343,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@micro-cms/types@0.0.2':
+    resolution: {integrity: sha512-SjIzd6GC4hraZsdBbnzEgcQR877RSprT6PKVTy03SEFvFYH+eXZhPDwuZNjwcP+7tgA6hHTdoskGfZevpRUwPA==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -992,6 +1007,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@micro-cms/types@0.0.2': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
