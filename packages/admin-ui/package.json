@@ -1,5 +1,5 @@
 {
-  "name": "@@[your-npm-username]admin-ui",
+  "name": "@micro-cms/admin-ui",
   "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",
@@ -17,7 +17,7 @@
     "react": ">=18"
   },
   "dependencies": {
-    "@@[your-npm-username]types": "workspace:*"
+    "@micro-cms/types": "workspace:*"
   },
   "scripts": {
   "devDependencies": {},

@@ -1,5 +1,5 @@
 {
-  "name": "@@[your-npm-username]core",
+  "name": "@micro-cms/core",
   "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",
@@ -14,7 +14,7 @@
     }
   },
   "dependencies": {
-    "@@[your-npm-username]types": "workspace:*"
+    "@micro-cms/types": "workspace:*"
   },
   "scripts": {
   "devDependencies": {},

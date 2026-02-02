@@ -15,24 +15,24 @@ Great questions! Let's think through each systematically.
 ### **Pattern:**
 
 ```javascript
-// @@[your-npm-username]postgres/index.js
+// @micro-cms/postgres/index.js
 export default {
   // Declarative manifest
   manifest: {
-    name: '@@[your-npm-username]postgres',
+    name: '@micro-cms/postgres',
     version: '1.0.0',
     provides: ['database-adapter', 'migration-runner'],
     requires: [],
-    optionalDependencies: ['@@[your-npm-username]redis'], // can work with it if present
+    optionalDependencies: ['@micro-cms/redis'], // can work with it if present
     
     // Pairing hints (new!)
     pairsWith: {
-      '@@[your-npm-username]rest-api': { reason: 'Provides data for REST endpoints', strength: 'recommended' },
-      '@@[your-npm-username]graphql': { reason: 'GraphQL needs a data source', strength: 'recommended' },
-      '@@[your-npm-username]admin-ui': { reason: 'Admin needs to display data', strength: 'optional' }
+      '@micro-cms/rest-api': { reason: 'Provides data for REST endpoints', strength: 'recommended' },
+      '@micro-cms/graphql': { reason: 'GraphQL needs a data source', strength: 'recommended' },
+      '@micro-cms/admin-ui': { reason: 'Admin needs to display data', strength: 'optional' }
     },
     
-    conflicts: ['@@[your-npm-username]mysql', '@@[your-npm-username]sqlite'],
+    conflicts: ['@micro-cms/mysql', '@micro-cms/sqlite'],
   },
   
   // Functional core
@@ -72,20 +72,20 @@ AI can:
 
 ```javascript
 pairsWith: {
-  '@@[your-npm-username]rest-api': {
+  '@micro-cms/rest-api': {
     reason: 'REST API needs a data source',
     strength: 'required',      // must have one of these
     category: 'data-consumer'
   },
   
-  '@@[your-npm-username]redis': {
+  '@micro-cms/redis': {
     reason: 'Redis can cache query results',
     strength: 'optional',      // nice to have
     category: 'performance',
     enablesFeatures: ['query-caching', 'session-storage']
   },
   
-  '@@[your-npm-username]auth-*': {        // wildcard!
+  '@micro-cms/auth-*': {        // wildcard!
     reason: 'Auth modules can use this for user storage',
     strength: 'compatible',    // works with, but not required
     category: 'authentication'
@@ -106,11 +106,11 @@ pairsWith: {
 **CLI AI:**
 ```
 User: "Add postgres"
-AI: ✓ Added @@[your-npm-username]postgres
+AI: ✓ Added @micro-cms/postgres
 
     Recommended pairings:
-    - @@[your-npm-username]rest-api (provides REST endpoints for your data)
-    - @@[your-npm-username]admin-ui (visual interface to manage data)
+    - @micro-cms/rest-api (provides REST endpoints for your data)
+    - @micro-cms/admin-ui (visual interface to manage data)
     
     Add these? [Y/n]
 ```
