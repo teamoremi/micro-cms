@@ -1,5 +1,5 @@
 {
-  "name": "@micro-cms/types",
+  "name": "@@[your-npm-username]types",
   "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",

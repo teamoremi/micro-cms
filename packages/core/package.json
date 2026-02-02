@@ -1,5 +1,5 @@
 {
-  "name": "@micro-cms/core",
+  "name": "@@[your-npm-username]core",
   "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",
@@ -14,9 +14,12 @@
     }
   },
   "dependencies": {
-    "@micro-cms/types": "workspace:*"
+    "@@[your-npm-username]types": "workspace:*"
   },
   "scripts": {
+  "devDependencies": {},
+    "typescript": "^5.0.0",
+
     "build": "tsc",
     "prepare": "pnpm build"
   }

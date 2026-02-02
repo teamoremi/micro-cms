@@ -8,7 +8,7 @@ Micro-CMS is not a monolithic application; it is a **runtime** that loads and or
 
 - **Zero Core:** The runtime ships with nothing but a module loader and an event bus.
 - **Composable Architecture:** Swap Postgres for MySQL, or a REST API for GraphQL by simply changing a module.
-- **Schema-Driven UI:** The Admin interface (`@micro-cms/admin-ui`) introspects your database schema to auto-generate forms and tables.
+- **Schema-Driven UI:** The Admin interface (`@@[your-npm-username]admin-ui`) introspects your database schema to auto-generate forms and tables.
 - **AI-First Design:** Every module exposes a declarative manifest that allows AI assistants to understand, configure, and pair modules automatically.
 - **Staged Event Bus:** Deterministic execution flow with `validation`, `processing`, and `notification` stages.
 
@@ -18,11 +18,11 @@ The project is structured as a pnpm monorepo:
 
 | Package | Description |
 | :--- | :--- |
-| [`@micro-cms/core`](./packages/core) | The Runtime orchestrator and Event Bus. |
-| [`@micro-cms/types`](./packages/types) | Shared contracts and manifest definitions. |
-| [`@micro-cms/admin-ui`](./packages/admin-ui) | React engine for dynamic, metadata-driven UI. |
-| [`@micro-cms/node-adapter`](./packages/node-adapter) | Remote API adapter for Node.js backends. |
-| [`@micro-cms/mock-db`](./packages/mock-db) | In-memory database for rapid prototyping. |
+| [`@@[your-npm-username]core`](./packages/core) | The Runtime orchestrator and Event Bus. |
+| [`@@[your-npm-username]types`](./packages/types) | Shared contracts and manifest definitions. |
+| [`@@[your-npm-username]admin-ui`](./packages/admin-ui) | React engine for dynamic, metadata-driven UI. |
+| [`@@[your-npm-username]node-adapter`](./packages/node-adapter) | Remote API adapter for Node.js backends. |
+| [`@@[your-npm-username]mock-db`](./packages/mock-db) | In-memory database for rapid prototyping. |
 
 ## 🚀 Quick Start
 
@@ -38,9 +38,9 @@ pnpm -r build
 Create a CMS instance by composing modules:
 
 ```typescript
-import { createApp } from '@micro-cms/core';
-import mockDb from '@micro-cms/mock-db';
-import adminUi from '@micro-cms/admin-ui';
+import { createApp } from '@@[your-npm-username]core';
+import mockDb from '@@[your-npm-username]mock-db';
+import adminUi from '@@[your-npm-username]admin-ui';
 
 const app = createApp();
 
@@ -66,7 +66,7 @@ All modules must follow the pattern defined in [`docs/DESIGN_PATTERN.md`](./docs
 ```javascript
 export default {
   manifest: {
-    name: '@micro-cms/my-module',
+    name: '@@[your-npm-username]my-module',
     version: '1.0.0',
     provides: ['capability-name'],
     publishes: {

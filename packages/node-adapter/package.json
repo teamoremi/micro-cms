@@ -1,5 +1,5 @@
 {
-  "name": "@micro-cms/node-adapter",
+  "name": "@@[your-npm-username]node-adapter",
   "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",
@@ -14,7 +14,7 @@
     }
   },
   "dependencies": {
-    "@micro-cms/types": "workspace:*"
+    "@@[your-npm-username]types": "workspace:*"
   },
   "scripts": {
     "build": "tsc",
