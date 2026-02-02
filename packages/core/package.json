@@ -5,22 +5,24 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-        "default": "./dist/index.js"
+      "default": "./dist/index.js"
     }
   },
   "dependencies": {
-    "@micro-cms/types": "workspace:*"
+    "@micro-cms/types": "^0.0.2"
   },
   "scripts": {
-  "devDependencies": {},
-    "typescript": "^5.0.0",
-
     "build": "tsc",
     "prepare": "pnpm build"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
   }
 }
