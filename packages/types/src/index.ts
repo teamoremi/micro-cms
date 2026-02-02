@@ -77,9 +77,21 @@ export interface CmsContext {
 }
 
 // Data Provider Capability (Standardized)
+export interface PaginatedResponse<T = any> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface DataProvider {
   introspect: () => Promise<Schema>;
-  find: (entity: string, query?: any) => Promise<any[]>;
+  find: (entity: string, query?: { 
+    page?: number; 
+    limit?: number; 
+    filter?: any; 
+    sort?: string;
+  }) => Promise<PaginatedResponse | any[]>;
   create: (entity: string, data: any) => Promise<any>;
   update: (entity: string, id: any, data: any) => Promise<any>;
   delete: (entity: string, id: any) => Promise<any>;

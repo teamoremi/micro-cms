@@ -40,10 +40,10 @@ export class NodeDataProvider implements DataProvider {
     };
   }
 
-  async find(entity: string, query?: any) {
-    const queryString = query ? '?' + new URLSearchParams(query).toString() : '';
+  async find(entity: string, query?: { page?: number; limit?: number }) {
+    const queryString = query ? '?' + new URLSearchParams(query as any).toString() : '';
     const response = await this.fetchApi(`/admin/resources/${entity}${queryString}`);
-    return response;
+    return response; // Assuming API returns { data: [], total: ..., page: ..., limit: ... }
   }
 
   async create(entity: string, data: any) {

@@ -40,8 +40,19 @@ export class MockDataProvider implements DataProvider {
     return Promise.resolve(MOCK_SCHEMA);
   }
 
-  async find(entity: string): Promise<any[]> {
-    return Promise.resolve(MOCK_DATA[entity] || []);
+  async find(entity: string, query?: { page?: number; limit?: number }): Promise<any> {
+    const table = MOCK_DATA[entity] || [];
+    const page = query?.page || 1;
+    const limit = query?.limit || 10;
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    
+    return Promise.resolve({
+      data: table.slice(start, end),
+      total: table.length,
+      page,
+      limit
+    });
   }
 
   async create(entity: string, data: any): Promise<any> {
