@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/admin-ui",
-  "version": "0.0.6",
+  "version": "1.0.2",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -19,7 +19,7 @@
     "react": ">=18"
   },
   "dependencies": {
-    "@micro-cms/types": "^0.0.5"
+    "@micro-cms/types": "1.0.2"
   },
   "scripts": {
     "build": "tsc",

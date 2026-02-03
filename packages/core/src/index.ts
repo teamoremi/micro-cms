@@ -72,10 +72,23 @@ class StateManager {
   }
 }
 
+export class RouteRegistry {
+  private routes: Record<string, any[]> = {};
+
+  register(moduleName: string, routes: any[]) {
+    this.routes[moduleName] = routes;
+  }
+
+  getAllRoutes() {
+    return Object.values(this.routes).flat();
+  }
+}
+
 export class App {
   private modules: CmsModule[] = [];
   private eventBus = new EventBus();
   private stateManager = new StateManager();
+  private routeRegistry = new RouteRegistry();
   private capabilities: Record<string, any> = {};
   private configs: Record<string, any> = {};
 
@@ -94,7 +107,8 @@ export class App {
 
   get runtime() {
     return {
-      getCapability: <T = any>(cap: string): T | undefined => this.capabilities[cap]
+      getCapability: <T = any>(cap: string): T | undefined => this.capabilities[cap],
+      getRoutes: () => this.routeRegistry.getAllRoutes()
     };
   }
 
@@ -104,7 +118,13 @@ export class App {
       
       const context: CmsContext = {
         runtime: {
-          register: (cap, impl) => { this.capabilities[cap] = impl; },
+          register: (cap, impl) => { 
+            this.capabilities[cap] = impl; 
+            // Special handling for route-provider
+            if (cap === 'route-provider' && typeof impl.getRoutes === 'function') {
+              this.routeRegistry.register(mod.manifest.name, impl.getRoutes());
+            }
+          },
           getCapability: (cap) => this.capabilities[cap]
         },
         events: {

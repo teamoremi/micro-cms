@@ -1,0 +1,18 @@
+{
+  "name": "@micro-cms/resource-module",
+  "version": "1.0.2",
+  "description": "Standardized CRUD and Schema routes for Micro-CMS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts"
+  },
+  "peerDependencies": {
+    "@micro-cms/types": "workspace:*",
+    "@micro-cms/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "tsup": "^8.0.2"
+  }
+}

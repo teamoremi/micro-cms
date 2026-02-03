@@ -95,5 +95,40 @@ export interface DataProvider {
   findById: (entity: string, id: any) => Promise<any>;
   create: (entity: string, data: any) => Promise<any>;
   update: (entity: string, id: any, data: any) => Promise<any>;
-  delete: (entity: string, id: any) => Promise<any>;
-}
+    delete: (entity: string, id: any) => Promise<any>;
+  }
+  
+  // Backend Routing Capability
+  export interface RouteDefinition {
+    method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
+    path: string;
+    handler: (req: any, res: any) => Promise<void>;
+    middleware?: string[];
+    meta?: Record<string, any>;
+  }
+  
+  export interface RouteProvider {
+    getRoutes: () => RouteDefinition[];
+  }
+  
+  // Crypto Payment Ability
+  export interface PaymentIntent {
+    orderId: string;
+    paymentAddress: string;
+    amount: string;
+    currency: string;
+    network: string;
+    nonce: string;
+  }
+  
+  export interface PaymentVerification {
+    transactionHash: string;
+    orderId: string;
+    status: 'pending' | 'confirmed' | 'failed';
+  }
+  
+  export interface PaymentProvider {
+    initiatePayment: (orderId: string, options: any) => Promise<PaymentIntent>;
+    verifyPayment: (txHash: string, orderId: string) => Promise<PaymentVerification>;
+  }
+  

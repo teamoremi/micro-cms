@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/node-adapter",
-  "version": "0.0.6",
+  "version": "1.0.2",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -16,7 +16,7 @@
     }
   },
   "dependencies": {
-    "@micro-cms/types": "^0.0.5"
+    "@micro-cms/types": "1.0.2"
   },
   "scripts": {
     "build": "tsc",

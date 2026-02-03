@@ -460,4 +460,51 @@ AI: Here's the event flow for 'order.created':
 | **State** | Module-private + published context + minimal global | Clear ownership, no races |
 | **Discovery** | JSON manifests in registry | AI can parse without execution |
 
+---
+
+## **6. Backend Route Modularization**
+
+To avoid hard-coded routes in framework-specific applications (like the Express app in `node_api`), we use a **Route-Provider Ability**.
+
+### **Pattern: Generic Route Definitions**
+
+Modules do not register routes directly with Express or Hono. Instead, they provide generic `RouteDefinition` objects.
+
+```typescript
+// Registered via runtime.register('route-provider', ...)
+{
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
+  path: '/admin/resources/:resource',
+  handler: 'resource.list', // Reference to a registered capability
+  middleware: ['admin-auth'] // Reference to registered middleware
+}
+```
+
+### **Architecture:**
+1.  **Framework Adapter:** A module like `@micro-cms/express-adapter` acts as the "Consumer". It queries all `route-provider` capabilities and maps them to `app.get()`, `app.post()`, etc.
+2.  **Resource Module:** The CRUD logic currently in `node_api` is moved to a `@micro-cms/resource-module`. It provides the handlers and route definitions.
+3.  **Decoupling:** This allows the same CMS logic to run on Express, Fastify, or Cloudflare Workers (Hono) without changing the module code.
+
+---
+
+## **7. Composable UI Widgets (Crypto Payment Pattern)**
+
+Instead of monolithic features, complex functionality should be delivered as **Composable Widgets**.
+
+### **Pattern: The Drop-in Widget**
+
+A module like `@micro-cms/crypto-payments` provides a high-level React component (e.g., `<PaymentWidget />`) and a corresponding hook (`usePayment()`).
+
+**Key Principles:**
+1.  **Framework Agnostic Backend:** The widget communicates with standardized endpoints (`/initiate`, `/verify-payment`). These endpoints can be provided by *any* backend module that registers the `payment-provider` ability.
+2.  **Stateful UI:** The widget handles its own internal lifecycle (wallet connection, transaction signing, blockchain polling) but remains visually consistent with the core design system (using `OffCanvas` for complex flows).
+3.  **Slot-based Integration:** The widget can be "slotted" into existing components like `AutoForm` or used as a standalone element in a custom checkout page.
+
+### **Example Handshake:**
+- **Frontend Widget:** Calls `api/orders/initiate` to get a signed payment intent.
+- **Backend Module:** A "Payment Ability" module intercepts this, calculates the crypto amount based on real-time exchange rates, and returns the destination address.
+- **Closure:** Once the wallet signs the transaction, the widget calls `api/orders/verify-payment`, completing the loop.
+
+---
+
 **Does this align with your vision?** Any patterns you'd like to explore further? 🤔

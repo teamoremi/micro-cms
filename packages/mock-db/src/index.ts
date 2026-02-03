@@ -76,11 +76,34 @@ export class MockDataProvider implements DataProvider {
   }
 }
 
+export class MockPaymentProvider {
+  async initiatePayment(orderId: string, options: any) {
+    console.log(`[MockPayment] Initiating for order ${orderId}`, options);
+    return {
+      orderId,
+      paymentAddress: '0x1234...5678_MOCK_ADDRESS',
+      amount: options.amount || '0.1',
+      currency: options.currency || 'ETH',
+      network: 'MockNetwork',
+      nonce: Math.random().toString(36).substring(7)
+    };
+  }
+
+  async verifyPayment(txHash: string, orderId: string) {
+    console.log(`[MockPayment] Verifying tx ${txHash} for order ${orderId}`);
+    return {
+      transactionHash: txHash,
+      orderId,
+      status: 'confirmed'
+    };
+  }
+}
+
 const mockDbModule: CmsModule = {
   manifest: {
     name: '@micro-cms/mock-db',
     version: '0.0.1',
-    provides: ['database-adapter', 'introspection'],
+    provides: ['database-adapter', 'introspection', 'payment-provider'],
     publishes: {
       'database.schema': 'The current database schema'
     }
@@ -88,6 +111,9 @@ const mockDbModule: CmsModule = {
   async load({ runtime, context }) {
     const provider = new MockDataProvider();
     runtime.register('database-adapter', provider);
+
+    const paymentProvider = new MockPaymentProvider();
+    runtime.register('payment-provider', paymentProvider);
     
     const schema = await provider.introspect();
     context.publish('database.schema', schema);
