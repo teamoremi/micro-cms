@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/mock-db",
-  "version": "1.0.12",
+  "version": "1.0.15",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
     }
   },
   "dependencies": {
-    "@micro-cms/types": "^1.0.12"
+    "@micro-cms/types": "^1.0.15"
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",

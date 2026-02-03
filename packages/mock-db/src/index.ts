@@ -54,10 +54,31 @@ export class MockDataProvider implements DataProvider {
     return Promise.resolve(MOCK_SCHEMA);
   }
 
-  async find(entity: string, query?: { page?: number; limit?: number }): Promise<any> {
-    const table = MOCK_DATA[entity] || [];
+  async find(entity: string, query?: { page?: number; limit?: number; q?: string; sort?: string }): Promise<any> {
+    let table = [...(MOCK_DATA[entity] || [])];
     const page = query?.page || 1;
     const limit = query?.limit || 10;
+
+    // Apply Search
+    if (query?.q) {
+      const q = query.q.toLowerCase();
+      table = table.filter(item => 
+        Object.values(item).some(val => String(val).toLowerCase().includes(q))
+      );
+    }
+
+    // Apply Sort
+    if (query?.sort) {
+      const [field, direction] = query.sort.split(':');
+      table.sort((a, b) => {
+        const valA = a[field];
+        const valB = b[field];
+        if (valA < valB) return direction === 'desc' ? 1 : -1;
+        if (valA > valB) return direction === 'desc' ? -1 : 1;
+        return 0;
+      });
+    }
+
     const start = (page - 1) * limit;
     const end = start + limit;
     

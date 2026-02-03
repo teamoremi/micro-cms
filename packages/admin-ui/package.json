@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/admin-ui",
-  "version": "1.0.12",
+  "version": "1.0.15",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -20,8 +20,9 @@
     "react": ">=18"
   },
   "dependencies": {
-    "@micro-cms/types": "^1.0.12",
+    "@micro-cms/types": "^1.0.15",
     "clsx": "^2.1.0",
+    "moment": "^2.30.1",
     "tailwind-merge": "^2.2.0"
   },
   "scripts": {

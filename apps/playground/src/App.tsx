@@ -11,6 +11,8 @@ function App() {
   const [page, setPage] = useState(1);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortInfo, setSortInfo] = useState<{ field: string; direction: 'asc' | 'desc' }>({ field: 'id', direction: 'asc' });
   const [db] = useState(() => new MockDataProvider());
   const [paymentProvider] = useState(() => new MockPaymentProvider());
   
@@ -32,7 +34,8 @@ function App() {
   useEffect(() => {
     if (activeEntity) {
       setPage(1);
-      loadData(1);
+      setSearchQuery('');
+      loadData(1, '', { field: 'id', direction: 'asc' });
     }
   }, [activeEntity]);
 
@@ -47,8 +50,13 @@ function App() {
     }
   }, [activeEntity, route.action, route.id, db]);
 
-  const loadData = (p: number = page) => {
-    if (activeEntity) db.find(activeEntity, { page: p, limit: 5 }).then(setData);
+  const loadData = (p: number = page, q: string = searchQuery, s = sortInfo) => {
+    if (activeEntity) db.find(activeEntity, { 
+      page: p, 
+      limit: 5,
+      q: q,
+      sort: `${s.field}:${s.direction}`
+    }).then(setData);
   };
 
   const handleCreateOrUpdate = async (formData: any) => {
@@ -140,6 +148,17 @@ function App() {
                   setPage(p);
                   loadData(p);
                 }}
+                onSearch={(q) => {
+                  setSearchQuery(q);
+                  setPage(1);
+                  loadData(1, q);
+                }}
+                onSort={(field, direction) => {
+                  const s = { field, direction };
+                  setSortInfo(s);
+                  loadData(page, searchQuery, s);
+                }}
+                currentSort={sortInfo}
               />
               {activeEntity === 'orders' && (
                 <div className="mt-4 p-4 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-between">

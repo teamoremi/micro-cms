@@ -33,12 +33,13 @@ export const createResourceModule = (): CmsModule => {
           path: '/resources/:resource',
           handler: async (req, res) => {
             const { resource } = req.params;
-            const { page, limit, sort, ...filter } = req.query;
+            const { page, limit, sort, q, ...filter } = req.query;
             const result = await db.find(resource, {
               page: Number(page) || 1,
               limit: Number(limit) || 10,
               sort: sort as string,
-              filter
+              filter,
+              q: q as string
             });
             res.json(result);
           },
@@ -64,6 +65,28 @@ export const createResourceModule = (): CmsModule => {
             const { resource } = req.params;
             const item = await db.create(resource, req.body);
             res.status(201).json(item);
+          },
+          middleware: ['admin-auth']
+        },
+        // Generic Update
+        {
+          method: 'PATCH',
+          path: '/resources/:resource/:id',
+          handler: async (req, res) => {
+            const { resource, id } = req.params;
+            const item = await db.update(resource, id, req.body);
+            res.json(item);
+          },
+          middleware: ['admin-auth']
+        },
+        // Generic Delete
+        {
+          method: 'DELETE',
+          path: '/resources/:resource/:id',
+          handler: async (req, res) => {
+            const { resource, id } = req.params;
+            await db.delete(resource, id);
+            res.status(204).send();
           },
           middleware: ['admin-auth']
         }

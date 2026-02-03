@@ -91,6 +91,7 @@ export interface DataProvider {
     limit?: number; 
     filter?: any; 
     sort?: string;
+    q?: string;
   }) => Promise<PaginatedResponse | any[]>;
   findById: (entity: string, id: any) => Promise<any>;
   create: (entity: string, data: any) => Promise<any>;
