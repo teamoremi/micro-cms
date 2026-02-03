@@ -55,6 +55,11 @@ export class MockDataProvider implements DataProvider {
     });
   }
 
+  async findById(entity: string, id: any): Promise<any> {
+    const table = MOCK_DATA[entity] || [];
+    return Promise.resolve(table.find(item => String(item.id) === String(id)));
+  }
+
   async create(entity: string, data: any): Promise<any> {
     const table = MOCK_DATA[entity] || [];
     const newItem = { ...data, id: table.length + 1 };

@@ -92,6 +92,7 @@ export interface DataProvider {
     filter?: any; 
     sort?: string;
   }) => Promise<PaginatedResponse | any[]>;
+  findById: (entity: string, id: any) => Promise<any>;
   create: (entity: string, data: any) => Promise<any>;
   update: (entity: string, id: any, data: any) => Promise<any>;
   delete: (entity: string, id: any) => Promise<any>;

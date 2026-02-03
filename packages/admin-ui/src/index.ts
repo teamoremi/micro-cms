@@ -4,6 +4,7 @@ import { ComponentRegistry, DefaultTextInput, DefaultNumberInput, DefaultBoolean
 export * from './registry';
 export * from './AutoForm';
 export * from './AutoTable';
+export * from './OffCanvas';
 
 const adminUiModule: CmsModule = {
   manifest: {

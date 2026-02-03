@@ -26,8 +26,7 @@ export const AutoForm: React.FC<AutoFormProps> = ({ entity, initialData = {}, on
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded shadow-sm bg-white">
-      <h3 className="text-lg font-semibold mb-4">Create {entity.name}</h3>
+    <form onSubmit={handleSubmit} className="space-y-6">
       {entity.fields.map((field) => {
         const Component = ComponentRegistry.get(field.type) || DefaultTextInput;
         return (

@@ -46,6 +46,10 @@ export class NodeDataProvider implements DataProvider {
     return response; // Assuming API returns { data: [], total: ..., page: ..., limit: ... }
   }
 
+  async findById(entity: string, id: any) {
+    return this.fetchApi(`/admin/resources/${entity}/${id}`);
+  }
+
   async create(entity: string, data: any) {
     return this.fetchApi(`/admin/resources/${entity}`, {
       method: 'POST',
