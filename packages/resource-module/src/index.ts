@@ -20,7 +20,7 @@ export const createResourceModule = (): CmsModule => {
         // Introspection
         {
           method: 'GET',
-          path: '/api/schema',
+          path: '/schema',
           handler: async (req, res) => {
             const schema = await db.introspect();
             res.json(schema);
@@ -30,7 +30,7 @@ export const createResourceModule = (): CmsModule => {
         // Generic List
         {
           method: 'GET',
-          path: '/api/resources/:resource',
+          path: '/resources/:resource',
           handler: async (req, res) => {
             const { resource } = req.params;
             const { page, limit, sort, ...filter } = req.query;
@@ -47,7 +47,7 @@ export const createResourceModule = (): CmsModule => {
         // Generic Get One
         {
           method: 'GET',
-          path: '/api/resources/:resource/:id',
+          path: '/resources/:resource/:id',
           handler: async (req, res) => {
             const { resource, id } = req.params;
             const item = await db.findById(resource, id);
@@ -59,7 +59,7 @@ export const createResourceModule = (): CmsModule => {
         // Generic Create
         {
           method: 'POST',
-          path: '/api/resources/:resource',
+          path: '/resources/:resource',
           handler: async (req, res) => {
             const { resource } = req.params;
             const item = await db.create(resource, req.body);

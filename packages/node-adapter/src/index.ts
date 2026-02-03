@@ -29,15 +29,24 @@ export class NodeDataProvider implements DataProvider {
 
   async introspect(): Promise<Schema> {
     const response = await this.fetchApi('/admin/schema');
-    return {
-      entities: Object.entries(response.resources).map(([name, def]: [string, any]) => ({
-        name,
-        fields: def.fields,
-        displayField: def.displayField,
-        primaryKey: def.primaryKey,
-        label: def.label,
-      })),
-    };
+    
+    // If the response is already in the Schema format (entities: []), return it
+    if (response && Array.isArray(response.entities)) {
+      return response;
+    }
+
+    // Fallback or old format support
+    if (response && response.resources) {
+      return {
+        entities: Object.entries(response.resources).map(([name, def]: [string, any]) => ({
+          name,
+          fields: def.fields,
+          ...def
+        })),
+      };
+    }
+
+    return { entities: [] };
   }
 
   async find(entity: string, query?: { page?: number; limit?: number }) {

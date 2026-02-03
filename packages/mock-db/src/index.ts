@@ -21,6 +21,16 @@ const MOCK_SCHEMA: Schema = {
         { name: 'publishedAt', type: 'date' },
         { name: 'authorId', type: 'relation', relation: { targetEntity: 'users', displayField: 'name' } }
       ]
+    },
+    {
+      name: 'orders',
+      fields: [
+        { name: 'id', type: 'number', constraints: { required: true } },
+        { name: 'amount', type: 'number', label: 'Amount', constraints: { required: true } },
+        { name: 'currency', type: 'text', label: 'Currency', constraints: { required: true } },
+        { name: 'status', type: 'select', constraints: { options: ['pending', 'paid', 'failed'] } },
+        { name: 'userId', type: 'relation', relation: { targetEntity: 'users', displayField: 'name' } }
+      ]
     }
   ]
 };
@@ -32,6 +42,10 @@ const MOCK_DATA: Record<string, any[]> = {
   ],
   posts: [
     { id: 1, title: 'Hello World', content: 'First post', publishedAt: '2023-01-01', authorId: 1 }
+  ],
+  orders: [
+    { id: 1, amount: 0.5, currency: 'SOL', status: 'pending', userId: 1 },
+    { id: 2, amount: 0.01, currency: 'ETH', status: 'pending', userId: 2 }
   ]
 };
 

@@ -12,7 +12,18 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
   className,
   ...props 
 }) => {
-  const { status, intent, error, initiate, verify, setStatus, isSolanaAvailable, handleSolanaPay } = usePayment(props);
+  const { 
+    status, 
+    intent, 
+    error, 
+    initiate, 
+    verify, 
+    setStatus, 
+    isSolanaAvailable, 
+    handleSolanaPay,
+    isEVMAvailable,
+    handleEVMPay
+  } = usePayment(props);
 
   if (status === 'success') {
     return (
@@ -83,7 +94,7 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
             </div>
 
             <div className="flex flex-col gap-2">
-              {(intent.network.toLowerCase().includes('solana') && isSolanaAvailable) ? (
+              {intent.network.toLowerCase().includes('solana') && isSolanaAvailable ? (
                 <button
                   onClick={handleSolanaPay}
                   className="w-full py-3 px-4 bg-[#512da8] hover:bg-[#4527a0] text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2"
@@ -91,13 +102,19 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
                   <Cpu className="w-4 h-4" />
                   Pay with Phantom
                 </button>
+              ) : (intent.network.toLowerCase().includes('ethereum') || intent.network.toLowerCase().includes('evm') || intent.network.toLowerCase().includes('polygon')) && isEVMAvailable ? (
+                <button
+                  onClick={handleEVMPay}
+                  className="w-full py-3 px-4 bg-[#f6851b] hover:bg-[#e2761b] text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2"
+                >
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Mirror_Logo.svg" className="w-4 h-4" alt="MetaMask" />
+                  Pay with MetaMask
+                </button>
               ) : (
                 <button
                   onClick={() => {
-                    // For other networks or if Solana is not available, we assume a generic confirmation step
+                    // For other networks or if dedicated provider is not available, we assume a generic confirmation step
                     setStatus('verifying');
-                    // In a real app, this would trigger a wallet-specific signature process
-                    // For now, we simulate a successful client-side action leading to verification
                     setTimeout(() => verify('0x_mock_transaction_hash_generic'), 2000);
                   }}
                   className="w-full py-3 px-4 bg-slate-900 hover:bg-black text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2"

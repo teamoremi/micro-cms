@@ -20,6 +20,9 @@ importers:
       '@micro-cms/admin-ui':
         specifier: workspace:*
         version: link:../../packages/admin-ui
+      '@micro-cms/crypto-payments':
+        specifier: workspace:*
+        version: link:../../packages/crypto-payments
       '@micro-cms/mock-db':
         specifier: workspace:*
         version: link:../../packages/mock-db
@@ -61,8 +64,8 @@ importers:
   packages/admin-ui:
     dependencies:
       '@micro-cms/types':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: 1.0.5
+        version: 1.0.5
       react:
         specifier: '>=18'
         version: 18.3.1
@@ -74,8 +77,8 @@ importers:
   packages/core:
     dependencies:
       '@micro-cms/types':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: 1.0.5
+        version: 1.0.5
     devDependencies:
       typescript:
         specifier: ^5.0.0
@@ -137,8 +140,8 @@ importers:
   packages/mock-db:
     dependencies:
       '@micro-cms/types':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: 1.0.5
+        version: 1.0.5
     devDependencies:
       typescript:
         specifier: ^5.0.0
@@ -147,8 +150,8 @@ importers:
   packages/node-adapter:
     dependencies:
       '@micro-cms/types':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: 1.0.5
+        version: 1.0.5
     devDependencies:
       typescript:
         specifier: ^5.0.0
@@ -569,8 +572,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@micro-cms/types@0.0.5':
-    resolution: {integrity: sha512-jVBRQMeDdpp71zMzSIUqR0xv8BLiAX8Jjo8lb3NxaVtZzDz4bVurUQpd4in2VTSUdeMYc8aysek8RTwPBXjG3g==}
+  '@micro-cms/types@1.0.5':
+    resolution: {integrity: sha512-RYuIcSOylwmxU/cmHydYz79HmgZAOp7Hk9hh0Hia2jIfMIVjZS0vq/D9OIg9Zdk5eLiQrSBNxx47Nrp+Vpu1pA==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1844,7 +1847,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@micro-cms/types@0.0.5': {}
+  '@micro-cms/types@1.0.5': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Schema, PaginatedResponse } from '@micro-cms/types';
-import { MockDataProvider } from '@micro-cms/mock-db';
+import { MockDataProvider, MockPaymentProvider } from '@micro-cms/mock-db';
 import { AutoForm, AutoTable, OffCanvas } from '@micro-cms/admin-ui';
+import { PaymentWidget } from '@micro-cms/crypto-payments';
 import { useRouter } from './router';
 
 function App() {
@@ -9,7 +10,9 @@ function App() {
   const [data, setData] = useState<any[] | PaginatedResponse>([]);
   const [page, setPage] = useState(1);
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
   const [db] = useState(() => new MockDataProvider());
+  const [paymentProvider] = useState(() => new MockPaymentProvider());
   
   const { route, navigateToEntity } = useRouter();
 
@@ -138,6 +141,34 @@ function App() {
                   loadData(p);
                 }}
               />
+              {activeEntity === 'orders' && (
+                <div className="mt-4 p-4 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-indigo-600 rounded-lg text-white">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-bold text-indigo-900">Crypto Payments Enabled</p>
+                      <p className="text-sm text-indigo-700">Select any pending order to test the payment widget.</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      const pendingOrder = (Array.isArray(data) ? data : data.data).find((o: any) => o.status === 'pending');
+                      if (pendingOrder) {
+                        setPayingOrderId(String(pendingOrder.id));
+                      } else {
+                        alert('No pending orders found to pay.');
+                      }
+                    }}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold text-sm transition-all"
+                  >
+                    Quick Pay Test
+                  </button>
+                </div>
+              )}
             </section>
 
             <OffCanvas 
@@ -150,6 +181,28 @@ function App() {
                 initialData={editingItem}
                 onSubmit={handleCreateOrUpdate} 
               />
+            </OffCanvas>
+
+            <OffCanvas
+              isOpen={!!payingOrderId}
+              onClose={() => setPayingOrderId(null)}
+              title="Checkout"
+            >
+              <div className="p-4">
+                <PaymentWidget 
+                  orderId={payingOrderId || ''} 
+                  provider={paymentProvider}
+                  onSuccess={(verification) => {
+                    alert(`Payment verified: ${verification.transactionHash}`);
+                    // Update order status in mock db
+                    db.update('orders', payingOrderId, { status: 'paid' }).then(() => {
+                      setPayingOrderId(null);
+                      loadData();
+                    });
+                  }}
+                  onError={(err) => alert(`Payment error: ${err.message}`)}
+                />
+              </div>
             </OffCanvas>
           </div>
         ) : (
