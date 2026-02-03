@@ -108,7 +108,7 @@ export class MockPaymentProvider {
     return {
       transactionHash: txHash,
       orderId,
-      status: 'confirmed'
+      status: 'confirmed' as const
     };
   }
 }

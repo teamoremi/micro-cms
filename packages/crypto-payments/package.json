@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/crypto-payments",
-  "version": "1.0.5",
+  "version": "1.0.12",
   "description": "Composable Crypto Payment Widget for Micro-CMS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build": "tsup src/index.ts --format cjs,esm --dts --minify --clean --inject-style && npx tailwindcss -i src/index.css -o dist/index.css --minify",
     "dev": "tsup src/index.ts --format cjs,esm --watch --dts",
     "lint": "eslint src/**/*.ts"
   },
@@ -25,6 +25,9 @@
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
+    "autoprefixer": "^10.4.24",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
     "tsup": "^8.0.2"
   }

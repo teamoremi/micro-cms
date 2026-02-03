@@ -26,10 +26,10 @@ export const ComponentRegistry = new Registry();
 
 // Default Components (Fallbacks)
 export const DefaultTextInput: FieldComponent = ({ field, value, onChange }) => (
-  <div className="flex flex-col gap-1">
-    <label className="text-sm font-medium">{field.label || field.name}</label>
+  <div className="mcms-flex mcms-flex-col mcms-gap-1">
+    <label className="mcms-text-sm mcms-font-medium">{field.label || field.name}</label>
     <input
-      className="border rounded px-2 py-1"
+      className="mcms-border mcms-rounded mcms-px-2 mcms-py-1"
       type="text"
       value={value || ''}
       onChange={(e) => onChange(e.target.value)}
@@ -39,10 +39,10 @@ export const DefaultTextInput: FieldComponent = ({ field, value, onChange }) => 
 );
 
 export const DefaultNumberInput: FieldComponent = ({ field, value, onChange }) => (
-  <div className="flex flex-col gap-1">
-    <label className="text-sm font-medium">{field.label || field.name}</label>
+  <div className="mcms-flex mcms-flex-col mcms-gap-1">
+    <label className="mcms-text-sm mcms-font-medium">{field.label || field.name}</label>
     <input
-      className="border rounded px-2 py-1"
+      className="mcms-border mcms-rounded mcms-px-2 mcms-py-1"
       type="number"
       value={value || ''}
       onChange={(e) => onChange(Number(e.target.value))}
@@ -51,13 +51,13 @@ export const DefaultNumberInput: FieldComponent = ({ field, value, onChange }) =
 );
 
 export const DefaultBooleanInput: FieldComponent = ({ field, value, onChange }) => (
-  <div className="flex items-center gap-2">
+  <div className="mcms-flex mcms-items-center mcms-gap-2">
     <input
       type="checkbox"
       checked={!!value}
       onChange={(e) => onChange(e.target.checked)}
     />
-    <label className="text-sm font-medium">{field.label || field.name}</label>
+    <label className="mcms-text-sm mcms-font-medium">{field.label || field.name}</label>
   </div>
 );
 

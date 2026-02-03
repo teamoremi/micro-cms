@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Entity } from '@micro-cms/types';
+import { injectStyles } from './index';
 
 // Redeclare or use any to bypass persistent build issue with types package sync
 interface PaginatedResponse<T = any> {
@@ -26,6 +27,10 @@ export const AutoTable: React.FC<AutoTableProps> = ({
   onPageChange,
   onLimitChange
 }) => {
+  useEffect(() => {
+    injectStyles();
+  }, []);
+
   const isPaginated = !Array.isArray(data) && data && 'total' in data;
   const items = isPaginated ? (data as PaginatedResponse).data : (data as any[]);
   const total = isPaginated ? (data as PaginatedResponse).total : items.length;
@@ -33,44 +38,44 @@ export const AutoTable: React.FC<AutoTableProps> = ({
   const limit = isPaginated ? (data as PaginatedResponse).limit : items.length;
 
   if (!items || items.length === 0) {
-    return <div className="p-4 text-gray-500 text-center border rounded bg-white">No records found for {entity.name}</div>;
+    return <div className="mcms-p-4 mcms-text-gray-500 mcms-text-center mcms-border mcms-rounded mcms-bg-white">No records found for {entity.name}</div>;
   }
 
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="space-y-4">
-      <div className="overflow-x-auto border rounded bg-white shadow-sm">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+    <div className="mcms-space-y-4">
+      <div className="mcms-overflow-x-auto mcms-border mcms-rounded mcms-bg-white mcms-shadow-sm">
+        <table className="mcms-min-w-full mcms-divide-y mcms-divide-gray-200">
+          <thead className="mcms-bg-gray-50">
             <tr>
               {entity.fields.map((field) => (
                 <th
                   key={field.name}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="mcms-px-6 mcms-py-3 mcms-text-left mcms-text-xs mcms-font-medium mcms-text-gray-500 mcms-uppercase mcms-tracking-wider"
                 >
                   {field.label || field.name}
                 </th>
               ))}
-              {(onEdit || onDelete) && <th className="px-6 py-3 text-right">Actions</th>}
+              {(onEdit || onDelete) && <th className="mcms-px-6 mcms-py-3 mcms-text-right">Actions</th>}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="mcms-bg-white mcms-divide-y mcms-divide-gray-200">
             {items.map((item: any, idx: number) => (
-              <tr key={item.id || idx} className="hover:bg-gray-50 transition-colors">
+              <tr key={item.id || idx} className="hover:mcms-bg-gray-50 mcms-transition-colors">
                 {entity.fields.map((field) => (
-                  <td key={field.name} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td key={field.name} className="mcms-px-6 mcms-py-4 mcms-whitespace-nowrap mcms-text-sm mcms-text-gray-900">
                     {typeof item[field.name] === 'boolean'
                       ? item[field.name] ? '✅' : '❌'
                       : String(item[field.name] ?? '-')}
                   </td>
                 ))}
                 {(onEdit || onDelete) && (
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="mcms-px-6 mcms-py-4 mcms-whitespace-nowrap mcms-text-right mcms-text-sm mcms-font-medium">
                     {onEdit && (
                       <button
                         onClick={() => onEdit(item)}
-                        className="text-blue-600 hover:text-blue-900 mr-4 font-semibold"
+                        className="mcms-text-blue-600 hover:mcms-text-blue-900 mcms-mr-4 mcms-font-semibold"
                       >
                         Edit
                       </button>
@@ -78,7 +83,7 @@ export const AutoTable: React.FC<AutoTableProps> = ({
                     {onDelete && (
                       <button
                         onClick={() => onDelete(item)}
-                        className="text-red-600 hover:text-red-900 font-semibold"
+                        className="mcms-text-red-600 hover:mcms-text-red-900 mcms-font-semibold"
                       >
                         Delete
                       </button>
@@ -92,25 +97,25 @@ export const AutoTable: React.FC<AutoTableProps> = ({
       </div>
 
       {isPaginated && (
-        <div className="flex items-center justify-between px-4 py-3 bg-white border rounded shadow-sm">
-          <div className="text-sm text-gray-700">
-            Showing <span className="font-medium">{(page - 1) * limit + 1}</span> to <span className="font-medium">{Math.min(page * limit, total)}</span> of <span className="font-medium">{total}</span> results
+        <div className="mcms-flex mcms-items-center mcms-justify-between mcms-px-4 mcms-py-3 mcms-bg-white mcms-border mcms-rounded mcms-shadow-sm">
+          <div className="mcms-text-sm mcms-text-gray-700">
+            Showing <span className="mcms-font-medium">{(page - 1) * limit + 1}</span> to <span className="mcms-font-medium">{Math.min(page * limit, total)}</span> of <span className="mcms-font-medium">{total}</span> results
           </div>
-          <div className="flex gap-2">
+          <div className="mcms-flex mcms-gap-2">
             <button
               onClick={() => onPageChange?.(page - 1)}
               disabled={page <= 1}
-              className="px-3 py-1 border rounded text-sm disabled:opacity-50 hover:bg-gray-50"
+              className="mcms-px-3 mcms-py-1 mcms-border mcms-rounded mcms-text-sm disabled:mcms-opacity-50 hover:mcms-bg-gray-50"
             >
               Previous
             </button>
-            <div className="flex items-center px-2 text-sm">
+            <div className="mcms-flex mcms-items-center mcms-px-2 mcms-text-sm">
               Page {page} of {totalPages}
             </div>
             <button
               onClick={() => onPageChange?.(page + 1)}
               disabled={page >= totalPages}
-              className="px-3 py-1 border rounded text-sm disabled:opacity-50 hover:bg-gray-50"
+              className="mcms-px-3 mcms-py-1 mcms-border mcms-rounded mcms-text-sm disabled:mcms-opacity-50 hover:mcms-bg-gray-50"
             >
               Next
             </button>

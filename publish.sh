@@ -29,29 +29,46 @@ fi
 echo "✅ Logged in to npm as $(npm whoami)."
 
 # --- Step 3: Synchronize all package versions ---
-echo "🔗 Synchronizing all packages to version $TARGET_VERSION..."
+echo "🔗 Synchronizing all packages to version $TARGET_VERSION (using workspace:* for internal deps)..."
 for pkg_json in packages/*/package.json; do
   echo "  Syncing $pkg_json..."
-  # Use jq to set the main version and update any internal @micro-cms/ dependencies
+  # Use jq to set the main version and update internal @micro-cms/ dependencies to workspace:*
   jq --arg VER "$TARGET_VERSION" '
     .version = $VER |
     if .dependencies then 
+      .dependencies |= with_entries(if .key | startswith("@micro-cms/") then .value = "workspace:*" else . end) 
+    else . end |
+    if .devDependencies then 
+      .devDependencies |= with_entries(if .key | startswith("@micro-cms/") then .value = "workspace:*" else . end) 
+    else . end
+  ' "$pkg_json" > temp.json && mv temp.json "$pkg_json"
+done
+echo "✅ All packages synchronized to $TARGET_VERSION with workspace:* internal deps."
+
+# --- Step 4: Install and Link ---
+echo "🔗 Installing and linking workspace dependencies..."
+pnpm install --no-frozen-lockfile
+echo "✅ Workspace dependencies linked."
+
+# --- Step 5: Build all packages ---
+echo "🏗 Building all packages in the monorepo..."
+pnpm -w build
+echo "✅ All packages built successfully."
+
+# --- Step 6: Final Dependency Sync for Publish ---
+echo "🔗 Replacing workspace:* with version $TARGET_VERSION for publishing..."
+for pkg_json in packages/*/package.json; do
+  jq --arg VER "^$TARGET_VERSION" '
+    if .dependencies then 
       .dependencies |= with_entries(if .key | startswith("@micro-cms/") then .value = $VER else . end) 
-    else . end | 
+    else . end |
     if .devDependencies then 
       .devDependencies |= with_entries(if .key | startswith("@micro-cms/") then .value = $VER else . end) 
     else . end
   ' "$pkg_json" > temp.json && mv temp.json "$pkg_json"
 done
-echo "✅ All packages and internal dependencies synchronized to $TARGET_VERSION."
 
-# --- Step 4: Build all packages ---
-echo "🏗 Building all packages in the monorepo..."
-# The -w flag tells pnpm to run the build in the root workspace, not just the sub-directories
-pnpm -w build
-echo "✅ All packages built successfully."
-
-# --- Step 5: Define publishing order ---
+# --- Step 7: Define publishing order ---
 # This order is important to ensure dependencies are published before packages that depend on them.
 PACKAGES=(
     "packages/types"
@@ -64,7 +81,7 @@ PACKAGES=(
     "packages/crypto-payments"
 )
 
-# --- Step 6: Publish packages ---
+# --- Step 8: Publish packages ---
 for PKG_PATH in "${PACKAGES[@]}"; do
     PKG_DIR="$MICRO_CMS_ROOT/$PKG_PATH"
     if [ -d "$PKG_DIR" ]; then

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Entity } from '@micro-cms/types';
 import { ComponentRegistry, DefaultTextInput } from './registry';
+import { injectStyles } from './index';
 
 interface AutoFormProps {
   entity: Entity;
@@ -10,6 +11,10 @@ interface AutoFormProps {
 
 export const AutoForm: React.FC<AutoFormProps> = ({ entity, initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState<any>(initialData || {});
+
+  useEffect(() => {
+    injectStyles();
+  }, []);
 
   // Update form data if initialData changes
   useEffect(() => {
@@ -26,11 +31,11 @@ export const AutoForm: React.FC<AutoFormProps> = ({ entity, initialData = {}, on
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="mcms-space-y-6">
       {entity.fields.map((field) => {
         const Component = ComponentRegistry.get(field.type) || DefaultTextInput;
         return (
-          <div key={field.name} className="mb-2">
+          <div key={field.name} className="mcms-mb-2">
             <Component
               field={field}
               value={formData[field.name]}
@@ -41,7 +46,7 @@ export const AutoForm: React.FC<AutoFormProps> = ({ entity, initialData = {}, on
       })}
       <button
         type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+        className="mcms-px-4 mcms-py-2 mcms-bg-blue-600 mcms-text-white mcms-rounded hover:mcms-bg-blue-700 mcms-transition-colors"
       >
         Save {entity.name}
       </button>
