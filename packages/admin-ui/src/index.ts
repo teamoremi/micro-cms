@@ -18,6 +18,7 @@ export * from './registry';
 export * from './AutoForm';
 export * from './AutoTable';
 export * from './OffCanvas';
+export * from './Notification';
 
 const adminUiModule: CmsModule = {
   manifest: {

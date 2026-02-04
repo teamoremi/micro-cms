@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Schema, PaginatedResponse } from '@micro-cms/types';
 import { MockDataProvider, MockPaymentProvider } from '@micro-cms/mock-db';
-import { AutoForm, AutoTable, OffCanvas } from '@micro-cms/admin-ui';
+import { AutoForm, AutoTable, OffCanvas, NotificationContainer, notify } from '@micro-cms/admin-ui';
 import { PaymentWidget } from '@micro-cms/crypto-payments';
 import { useRouter } from './router';
 
@@ -61,15 +61,19 @@ function App() {
 
   const handleCreateOrUpdate = async (formData: any) => {
     if (activeEntity) {
-      if (route.action === 'edit' && route.id) {
-        await db.update(activeEntity, route.id, formData);
-        alert('Record updated!');
-      } else {
-        await db.create(activeEntity, formData);
-        alert('Record created!');
+      try {
+        if (route.action === 'edit' && route.id) {
+          await db.update(activeEntity, route.id, formData);
+          notify('Record updated successfully!');
+        } else {
+          await db.create(activeEntity, formData);
+          notify('Record created successfully!');
+        }
+        handleCloseOffCanvas();
+        loadData();
+      } catch (err: any) {
+        notify(err.message || 'Operation failed', 'error');
       }
-      handleCloseOffCanvas();
-      loadData();
     }
   };
 
@@ -236,6 +240,7 @@ function App() {
           </div>
         )}
       </main>
+      <NotificationContainer />
     </div>
   );
 }
