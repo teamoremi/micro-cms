@@ -23,8 +23,14 @@ class EventBus {
       };
     }
 
-    this.listeners[event][stage].push({ callback, priority, parallel });
+    const handler = { callback, priority, parallel };
+    this.listeners[event][stage].push(handler);
     this.listeners[event][stage].sort((a, b) => b.priority - a.priority);
+
+    // Return unsubscribe function
+    return () => {
+      this.listeners[event][stage] = this.listeners[event][stage].filter(h => h !== handler);
+    };
   }
 
   async emit(event: string, payload: any) {
@@ -102,6 +108,13 @@ export class App {
     return {
       get: (k: string) => this.stateManager.get(k),
       subscribe: (k: string, c: Function) => this.stateManager.subscribe(k, c)
+    };
+  }
+
+  get events() {
+    return {
+      emit: (e: string, p: any) => this.eventBus.emit(e, p),
+      subscribe: (e: string, c: Function, o?: SubscriptionOptions) => this.eventBus.subscribe(e, c, o)
     };
   }
 

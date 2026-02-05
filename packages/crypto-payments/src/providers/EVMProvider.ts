@@ -35,19 +35,35 @@ export const useEVMWallet = () => {
     const provider = getProvider();
     if (!provider) throw new Error('Wallet not connected');
 
-    console.log(`Simulating EVM payment to ${intent.paymentAddress} for ${intent.amount} ${intent.currency}`);
+    const accounts = await provider.request({ method: 'eth_accounts' });
+    if (!accounts || accounts.length === 0) {
+      throw new Error('No accounts found. Please connect your wallet first.');
+    }
 
-    // Real implementation would use ethers.js or viem:
-    // const txHash = await provider.request({
-    //   method: 'eth_sendTransaction',
-    //   params: [{
-    //     from: (await provider.request({ method: 'eth_accounts' }))[0],
-    //     to: intent.paymentAddress,
-    //     value: '0x' + (Number(intent.amount) * 1e18).toString(16), // Convert to Wei hex
-    //   }],
-    // });
+    // Convert amount to Wei (assuming 18 decimals for ETH/Standard tokens)
+    // For USDC on EVM, it's usually 6 decimals. 
+    // This logic should ideally be more robust based on the token.
+    const decimals = intent.currency.toUpperCase() === 'USDC' ? 6 : 18;
+    const value = '0x' + (BigInt(Math.floor(Number(intent.amount) * Math.pow(10, decimals)))).toString(16);
 
-    return 'simulated_evm_tx_hash_' + Math.random().toString(36).slice(2);
+    try {
+      const txHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: accounts[0],
+          to: intent.paymentAddress,
+          value: intent.currency.toUpperCase() === 'ETH' ? value : '0x0', // Only value for native currency
+          // If it was a token transfer, we would need the data field with transfer(address,uint256)
+        }],
+      });
+
+      return txHash;
+    } catch (err: any) {
+      if (err.code === 4001) {
+        throw new Error('Transaction rejected by user');
+      }
+      throw new Error(err.message || 'Failed to send transaction');
+    }
   };
 
   return { isAvailable: !!getProvider(), connect, sendPayment };

@@ -19,6 +19,7 @@ export interface PaymentWidgetProps {
     initiate?: string; // Default to /api/orders/initiate
     verify?: string; // Default to /api/orders/verify-payment
   };
+  headers?: Record<string, string>; // Optional custom headers for fetch calls
   className?: string; // Classname for the wrapper div
 }
 
@@ -46,11 +47,15 @@ export const usePayment = (props: PaymentWidgetProps) => {
 
       const response = await fetch(props.endpoints?.initiate || '/api/orders/initiate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(props.headers || {})
+        },
         body: JSON.stringify({
-          orderId: props.orderId,
+          productId: props.orderId, // In node_api, it expects productId
           amount: props.amount,
-          currency: props.currency
+          currency: props.currency,
+          paymentProvider: 'crypto' // Tell backend we want crypto
         })
       });
 
@@ -67,7 +72,7 @@ export const usePayment = (props: PaymentWidgetProps) => {
       setStatus('error');
       props.onError?.(err);
     }
-  }, [props.provider, props.endpoints?.initiate, props.orderId, props.amount, props.currency, props.onError]);
+  }, [props.provider, props.endpoints?.initiate, props.orderId, props.amount, props.currency, props.onError, props.headers]);
 
   const verify = useCallback(async (txHash: string) => {
     try {
@@ -86,9 +91,12 @@ export const usePayment = (props: PaymentWidgetProps) => {
 
       const response = await fetch(props.endpoints?.verify || '/api/orders/verify-payment', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(props.headers || {})
+        },
         body: JSON.stringify({
-          orderId: props.orderId,
+          orderId: intent?.orderId || props.orderId,
           transactionHash: txHash
         })
       });
@@ -110,7 +118,7 @@ export const usePayment = (props: PaymentWidgetProps) => {
       setStatus('error');
       props.onError?.(err);
     }
-  }, [props.provider, props.endpoints?.verify, props.orderId, props.onSuccess, props.onError]);
+  }, [props.provider, props.endpoints?.verify, props.orderId, props.onSuccess, props.onError, props.headers, intent?.orderId]);
 
   // Integration with Solana
   const { isAvailable: isSolanaAvailable, connect: connectSolana, sendPayment: sendSolanaPayment } = useSolanaWallet();

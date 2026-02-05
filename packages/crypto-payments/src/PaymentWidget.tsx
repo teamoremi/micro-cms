@@ -81,6 +81,10 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
                 <span className="mcms-font-mono mcms-font-medium mcms-text-slate-900">{intent.amount} {intent.currency}</span>
               </div>
               <div className="mcms-flex mcms-justify-between mcms-text-sm">
+                <span className="mcms-text-slate-500">Order ID</span>
+                <span className="mcms-font-mono mcms-text-slate-900">{intent.orderId}</span>
+              </div>
+              <div className="mcms-flex mcms-justify-between mcms-text-sm">
                 <span className="mcms-text-slate-500">Network</span>
                 <span className="mcms-text-slate-900 mcms-font-medium">{intent.network}</span>
               </div>
@@ -94,7 +98,7 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
             </div>
 
             <div className="mcms-flex mcms-flex-col mcms-gap-2">
-              {intent.network.toLowerCase().includes('solana') && isSolanaAvailable ? (
+              {intent.network?.toLowerCase().includes('solana') && isSolanaAvailable ? (
                 <button
                   onClick={handleSolanaPay}
                   className="mcms-w-full mcms-py-3 mcms-px-4 mcms-bg-[#512da8] hover:mcms-bg-[#4527a0] mcms-text-white mcms-font-medium mcms-rounded-xl mcms-transition-colors mcms-flex mcms-items-center mcms-justify-center mcms-gap-2"
@@ -102,7 +106,7 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
                   <Cpu className="mcms-w-4 mcms-h-4" />
                   Pay with Phantom
                 </button>
-              ) : (intent.network.toLowerCase().includes('ethereum') || intent.network.toLowerCase().includes('evm') || intent.network.toLowerCase().includes('polygon')) && isEVMAvailable ? (
+              ) : (intent.network?.toLowerCase().includes('ethereum') || intent.network?.toLowerCase().includes('evm') || intent.network?.toLowerCase().includes('polygon')) && isEVMAvailable ? (
                 <button
                   onClick={handleEVMPay}
                   className="mcms-w-full mcms-py-3 mcms-px-4 mcms-bg-[#f6851b] hover:mcms-bg-[#e2761b] mcms-text-white mcms-font-medium mcms-rounded-xl mcms-transition-colors mcms-flex mcms-items-center mcms-justify-center mcms-gap-2"
