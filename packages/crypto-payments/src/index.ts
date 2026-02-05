@@ -2,11 +2,11 @@ import { useState, useCallback } from 'react';
 import { PaymentIntent, PaymentVerification, PaymentProvider } from '@micro-cms/types';
 import { useSolanaWallet } from './providers/SolanaProvider';
 import { useEVMWallet } from './providers/EVMProvider';
-import './index.css';
 
 export * from './providers/SolanaProvider';
 export * from './providers/EVMProvider';
 export * from './PaymentWidget';
+export * from './injectStyles';
 
 export interface PaymentWidgetProps {
   orderId: string;

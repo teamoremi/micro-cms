@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { Wallet, CheckCircle, Loader2, AlertCircle, ExternalLink, Cpu } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { PaymentWidgetProps, usePayment } from './index'; // Import usePayment from index.ts
+import { injectStyles } from './injectStyles';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -12,6 +13,10 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
   className,
   ...props 
 }) => {
+  useLayoutEffect(() => {
+    injectStyles();
+  }, []);
+
   const { 
     status, 
     intent, 
@@ -101,7 +106,7 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
               {intent.network?.toLowerCase().includes('solana') && isSolanaAvailable ? (
                 <button
                   onClick={handleSolanaPay}
-                  className="mcms-w-full mcms-py-3 mcms-px-4 mcms-bg-[#512da8] hover:mcms-bg-[#4527a0] mcms-text-white mcms-font-medium mcms-rounded-xl mcms-transition-colors mcms-flex mcms-items-center mcms-justify-center mcms-gap-2"
+                  className="mcms-w-full mcms-py-3 mcms-px-4 mcms-bg-sky-600 hover:mcms-bg-sky-700 mcms-text-white mcms-font-medium mcms-rounded-xl mcms-transition-colors mcms-flex mcms-items-center mcms-justify-center mcms-gap-2"
                 >
                   <Cpu className="mcms-w-4 mcms-h-4" />
                   Pay with Phantom
@@ -109,7 +114,7 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
               ) : (intent.network?.toLowerCase().includes('ethereum') || intent.network?.toLowerCase().includes('evm') || intent.network?.toLowerCase().includes('polygon')) && isEVMAvailable ? (
                 <button
                   onClick={handleEVMPay}
-                  className="mcms-w-full mcms-py-3 mcms-px-4 mcms-bg-[#f6851b] hover:mcms-bg-[#e2761b] mcms-text-white mcms-font-medium mcms-rounded-xl mcms-transition-colors mcms-flex mcms-items-center mcms-justify-center mcms-gap-2"
+                  className="mcms-w-full mcms-py-3 mcms-px-4 mcms-bg-orange-500 hover:mcms-bg-orange-600 mcms-text-white mcms-font-medium mcms-rounded-xl mcms-transition-colors mcms-flex mcms-items-center mcms-justify-center mcms-gap-2"
                 >
                   <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Mirror_Logo.svg" className="mcms-w-4 mcms-h-4" alt="MetaMask" />
                   Pay with MetaMask

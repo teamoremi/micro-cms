@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/node-adapter",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
     }
   },
   "dependencies": {
-    "@micro-cms/types": "^1.0.19"
+    "@micro-cms/types": "^1.0.20"
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
