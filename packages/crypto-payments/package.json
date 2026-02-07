@@ -32,5 +32,14 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
     "tsup": "^8.0.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teamoremi/micro-cms.git",
+    "directory": "packages/crypto-payments"
+  },
+  "bugs": {
+    "url": "https://github.com/teamoremi/micro-cms/issues"
+  },
+  "homepage": "https://github.com/teamoremi/micro-cms/tree/master/packages/crypto-payments#readme"
 }

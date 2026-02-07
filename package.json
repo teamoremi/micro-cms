@@ -11,6 +11,14 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.19.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teamoremi/micro-cms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/teamoremi/micro-cms/issues"
+  },
+  "homepage": "https://github.com/teamoremi/micro-cms#readme",
   "devDependencies": {
     "@types/react": "^18.3.27",
     "@types/react-dom": "^18.3.7"

@@ -16,5 +16,14 @@
     "@types/express": "^4.17.0",
     "typescript": "^5.3.3",
     "tsup": "^8.0.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teamoremi/micro-cms.git",
+    "directory": "packages/express-adapter"
+  },
+  "bugs": {
+    "url": "https://github.com/teamoremi/micro-cms/issues"
+  },
+  "homepage": "https://github.com/teamoremi/micro-cms/tree/master/packages/express-adapter#readme"
 }
