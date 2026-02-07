@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/crypto-payments",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "Composable Crypto Payment Widget for Micro-CMS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
