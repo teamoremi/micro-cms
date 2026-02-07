@@ -21,6 +21,9 @@ The project is structured as a pnpm monorepo:
 | [`@micro-cms/core`](./packages/core) | The Runtime orchestrator and Event Bus. |
 | [`@micro-cms/types`](./packages/types) | Shared contracts and manifest definitions. |
 | [`@micro-cms/admin-ui`](./packages/admin-ui) | React engine for dynamic, metadata-driven UI. |
+| [`@micro-cms/resource-module`](./packages/resource-module) | Framework-agnostic CRUD & Schema logic. |
+| [`@micro-cms/express-adapter`](./packages/express-adapter) | Binds CMS modules to Express.js endpoints. |
+| [`@micro-cms/crypto-payments`](./packages/crypto-payments) | Drop-in React widget for blockchain payments. |
 | [`@micro-cms/node-adapter`](./packages/node-adapter) | Remote API adapter for Node.js backends. |
 | [`@micro-cms/mock-db`](./packages/mock-db) | In-memory database for rapid prototyping. |
 
