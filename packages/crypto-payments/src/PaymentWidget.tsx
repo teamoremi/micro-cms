@@ -14,7 +14,9 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
   ...props 
 }) => {
   useLayoutEffect(() => {
-    injectStyles();
+    if (typeof window !== 'undefined') {
+      injectStyles();
+    }
   }, []);
 
   const { 
@@ -24,9 +26,7 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
     initiate, 
     verify, 
     setStatus, 
-    isSolanaAvailable, 
     handleSolanaPay,
-    isEVMAvailable,
     handleEVMPay
   } = usePayment(props);
 
@@ -96,22 +96,24 @@ export const PaymentWidget: React.FC<PaymentWidgetProps> = ({
             </div>
 
             <div className="mcms-space-y-2">
-              <p className="mcms-text-xs mcms-text-slate-500 mcms-uppercase mcms-font-bold mcms-tracking-wider">Destination Address</p>
-              <div className="mcms-p-3 mcms-bg-slate-100 mcms-rounded-lg mcms-font-mono mcms-text-xs mcms-break-all mcms-text-slate-600 mcms-border mcms-border-slate-200">
-                {intent.paymentAddress}
+              <p className="mcms-text-xs mcms-text-slate-500 mcms-uppercase mcms-font-bold mcms-tracking-wider">
+                Destination Address
+              </p>
+              <div className="mcms-p-3 mcms-bg-slate-100 mcms-rounded-lg mcms-font-mono mcms-text-xs mcms-break-all mcms-text-slate-600 mcms-border mcms-border-slate-200 mcms-flex mcms-justify-center">
+                {intent.paymentAddress ? `${intent.paymentAddress.slice(0, 6)}...${intent.paymentAddress.slice(-4)}` : 'Establishing...'}
               </div>
             </div>
 
             <div className="mcms-flex mcms-flex-col mcms-gap-2">
-              {intent.network?.toLowerCase().includes('solana') && isSolanaAvailable ? (
+              {intent.network?.toLowerCase().includes('solana') ? (
                 <button
                   onClick={handleSolanaPay}
-                  className="mcms-w-full mcms-py-3 mcms-px-4 mcms-bg-sky-600 hover:mcms-bg-sky-700 mcms-text-white mcms-font-medium mcms-rounded-xl mcms-transition-colors mcms-flex mcms-items-center mcms-justify-center mcms-gap-2"
+                  className="mcms-w-full mcms-py-3 mcms-px-4 mcms-bg-indigo-600 hover:mcms-bg-indigo-700 mcms-text-white mcms-font-medium mcms-rounded-xl mcms-transition-colors mcms-flex mcms-items-center mcms-justify-center mcms-gap-2"
                 >
                   <Cpu className="mcms-w-4 mcms-h-4" />
                   Pay with Phantom
                 </button>
-              ) : (intent.network?.toLowerCase().includes('ethereum') || intent.network?.toLowerCase().includes('evm') || intent.network?.toLowerCase().includes('polygon')) && isEVMAvailable ? (
+              ) : (intent.network?.toLowerCase().includes('ethereum') || intent.network?.toLowerCase().includes('evm') || intent.network?.toLowerCase().includes('polygon')) ? (
                 <button
                   onClick={handleEVMPay}
                   className="mcms-w-full mcms-py-3 mcms-px-4 mcms-bg-orange-500 hover:mcms-bg-orange-600 mcms-text-white mcms-font-medium mcms-rounded-xl mcms-transition-colors mcms-flex mcms-items-center mcms-justify-center mcms-gap-2"

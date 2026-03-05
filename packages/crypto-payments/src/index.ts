@@ -1,26 +1,32 @@
+import { Buffer } from 'buffer/';
+
+// 1. Immediate Polyfill Injection
+if (typeof window !== 'undefined') {
+  if (!(window as any).Buffer) (window as any).Buffer = Buffer;
+  if (!(window as any).global) (window as any).global = window;
+  if (!(window as any).process) (window as any).process = { env: {} };
+}
+
 import { useState, useCallback } from 'react';
 import { PaymentIntent, PaymentVerification, PaymentProvider } from '@micro-cms/types';
-import { useSolanaWallet } from './providers/SolanaProvider';
-import { useEVMWallet } from './providers/EVMProvider';
 
-export * from './providers/SolanaProvider';
-export * from './providers/EVMProvider';
+// Export everything else
 export * from './PaymentWidget';
 export * from './injectStyles';
 
 export interface PaymentWidgetProps {
   orderId: string;
-  amount?: number; // Optional, will be determined by backend
-  currency?: string; // Optional, will be determined by backend
+  amount?: number;
+  currency?: string;
   onSuccess?: (verification: PaymentVerification) => void;
   onError?: (error: Error) => void;
-  provider?: PaymentProvider; // Optional direct provider for standalone use
+  provider?: PaymentProvider;
   endpoints?: {
-    initiate?: string; // Default to /api/orders/initiate
-    verify?: string; // Default to /api/orders/verify-payment
+    initiate?: string;
+    verify?: string;
   };
-  headers?: Record<string, string>; // Optional custom headers for fetch calls
-  className?: string; // Classname for the wrapper div
+  headers?: Record<string, string>;
+  className?: string;
 }
 
 export type PaymentStatus = 'idle' | 'connecting' | 'initiating' | 'pending_signature' | 'verifying' | 'success' | 'error';
@@ -30,50 +36,7 @@ export const usePayment = (props: PaymentWidgetProps) => {
   const [error, setError] = useState<string | null>(null);
   const [intent, setIntent] = useState<PaymentIntent | null>(null);
 
-  const initiate = useCallback(async () => {
-    try {
-      setStatus('initiating');
-      setError(null);
-
-      if (props.provider) {
-        const data = await props.provider.initiatePayment(props.orderId, {
-          amount: props.amount,
-          currency: props.currency
-        });
-        setIntent(data);
-        setStatus('pending_signature');
-        return;
-      }
-
-      const response = await fetch(props.endpoints?.initiate || '/api/orders/initiate', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(props.headers || {})
-        },
-        body: JSON.stringify({
-          productId: props.orderId, // In node_api, it expects productId
-          amount: props.amount,
-          currency: props.currency,
-          paymentProvider: 'crypto' // Tell backend we want crypto
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to initiate payment intent');
-      }
-      
-      const data: PaymentIntent = await response.json();
-      setIntent(data);
-      setStatus('pending_signature');
-    } catch (err: any) {
-      setError(err.message);
-      setStatus('error');
-      props.onError?.(err);
-    }
-  }, [props.provider, props.endpoints?.initiate, props.orderId, props.amount, props.currency, props.onError, props.headers]);
-
+  // Verification Logic
   const verify = useCallback(async (txHash: string) => {
     try {
       setStatus('verifying');
@@ -120,9 +83,7 @@ export const usePayment = (props: PaymentWidgetProps) => {
     }
   }, [props.provider, props.endpoints?.verify, props.orderId, props.onSuccess, props.onError, props.headers, intent?.orderId]);
 
-  // Integration with Solana
-  const { isAvailable: isSolanaAvailable, connect: connectSolana, sendPayment: sendSolanaPayment } = useSolanaWallet();
-
+  // Dynamic Solana Pay Handler
   const handleSolanaPay = async () => {
     try {
       if (!intent) {
@@ -131,12 +92,15 @@ export const usePayment = (props: PaymentWidgetProps) => {
         return;
       }
       setStatus('connecting');
-      const publicKey = await connectSolana();
-      console.log('Connected to Solana with public key:', publicKey);
       
+      // Dynamic import to ensure polyfills are applied first
+      const { useSolanaWallet } = await import('./providers/SolanaProvider');
+      const solana = useSolanaWallet();
+      
+      const publicKey = await solana.connect();
       setStatus('pending_signature');
-      const signature = await sendSolanaPayment(intent); 
       
+      const signature = await solana.sendPayment(intent); 
       setStatus('verifying');
       await verify(signature);
     } catch (err: any) {
@@ -146,9 +110,7 @@ export const usePayment = (props: PaymentWidgetProps) => {
     }
   };
 
-  // Integration with EVM
-  const { isAvailable: isEVMAvailable, connect: connectEVM, sendPayment: sendEVMPayment } = useEVMWallet();
-
+  // Dynamic EVM Pay Handler
   const handleEVMPay = async () => {
     try {
       if (!intent) {
@@ -157,12 +119,14 @@ export const usePayment = (props: PaymentWidgetProps) => {
         return;
       }
       setStatus('connecting');
-      const account = await connectEVM();
-      console.log('Connected to EVM with account:', account);
       
+      const { useEVMWallet } = await import('./providers/EVMProvider');
+      const evm = useEVMWallet();
+      
+      const account = await evm.connect();
       setStatus('pending_signature');
-      const txHash = await sendEVMPayment(intent); 
       
+      const txHash = await evm.sendPayment(intent); 
       setStatus('verifying');
       await verify(txHash);
     } catch (err: any) {
@@ -172,6 +136,50 @@ export const usePayment = (props: PaymentWidgetProps) => {
     }
   };
 
+  const initiate = useCallback(async () => {
+    try {
+      setStatus('initiating');
+      setError(null);
+
+      if (props.provider) {
+        const data = await props.provider.initiatePayment(props.orderId, {
+          amount: props.amount,
+          currency: props.currency
+        });
+        setIntent(data);
+        setStatus('pending_signature');
+        return;
+      }
+
+      const response = await fetch(props.endpoints?.initiate || '/api/orders/initiate', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(props.headers || {})
+        },
+        body: JSON.stringify({
+          productId: props.orderId,
+          amount: props.amount,
+          currency: props.currency,
+          paymentProvider: 'crypto'
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to initiate payment intent');
+      }
+      
+      const data: PaymentIntent = await response.json();
+      setIntent(data);
+      setStatus('pending_signature');
+    } catch (err: any) {
+      setError(err.message);
+      setStatus('error');
+      props.onError?.(err);
+    }
+  }, [props.provider, props.endpoints?.initiate, props.orderId, props.amount, props.currency, props.onError, props.headers]);
+
   return { 
     status, 
     intent, 
@@ -179,9 +187,9 @@ export const usePayment = (props: PaymentWidgetProps) => {
     initiate, 
     verify, 
     setStatus, 
-    isSolanaAvailable, 
+    isSolanaAvailable: true, // Simplified for now
     handleSolanaPay,
-    isEVMAvailable,
+    isEVMAvailable: true,    // Simplified for now
     handleEVMPay
   };
 };
