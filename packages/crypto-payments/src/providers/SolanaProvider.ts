@@ -52,14 +52,21 @@ export const useSolanaWallet = () => {
     }
   };
 
-  const sendPayment = async (intent: PaymentIntent) => {
+  const sendPayment = async (intent: PaymentIntent, customRpcUrl?: string) => {
     const provider = getProvider();
     if (!provider) throw new Error('Wallet not connected');
 
     try {
       // Determine if this is a Devnet or Mainnet transaction
-      const isMainnet = !window.location.host.includes('localhost') && !window.location.host.includes('dev.');
-      const rpcUrl = isMainnet ? 'https://api.mainnet-beta.solana.com' : 'https://api.devnet.solana.com';
+      const isMainnet = 
+        intent.network?.toLowerCase().includes('mainnet') || 
+        intent.network === 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' || // Mainnet genesis hash
+        (!window.location.host.includes('localhost') && 
+         !window.location.host.includes('dev.') && 
+         !intent.network?.toLowerCase().includes('devnet'));
+         
+      const defaultRpcUrl = isMainnet ? 'https://api.mainnet-beta.solana.com' : 'https://api.devnet.solana.com';
+      const rpcUrl = customRpcUrl || defaultRpcUrl;
       const connection = new Connection(rpcUrl, 'confirmed');
       
       const accounts = await provider.connect({ onlyIfTrusted: true });

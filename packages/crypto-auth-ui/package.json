@@ -1,7 +1,7 @@
 {
-  "name": "@micro-cms/crypto-payments",
+  "name": "@micro-cms/crypto-auth-ui",
   "version": "1.0.32",
-  "description": "Composable Crypto Payment Widget for Micro-CMS",
+  "description": "Composable Crypto Authentication Widget for Micro-CMS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -14,14 +14,13 @@
     "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
-    "@solana/buffer-layout": "^4.0.1",
-    "@solana/spl-token": "^0.4.14",
     "@solana/web3.js": "^1.91.1",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "clsx": "^2.1.0",
     "lucide-react": "^0.344.0",
-    "tailwind-merge": "^2.2.1"
+    "tailwind-merge": "^2.2.1",
+    "viem": "^2.7.0"
   },
   "peerDependencies": {
     "@micro-cms/core": "workspace:*",
@@ -30,19 +29,10 @@
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
-    "autoprefixer": "^10.4.24",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/teamoremi/micro-cms.git",
-    "directory": "packages/crypto-payments"
-  },
-  "bugs": {
-    "url": "https://github.com/teamoremi/micro-cms/issues"
-  },
-  "homepage": "https://github.com/teamoremi/micro-cms/tree/master/packages/crypto-payments#readme"
+  }
 }

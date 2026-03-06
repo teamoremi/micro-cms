@@ -21,6 +21,7 @@ export interface PaymentWidgetProps {
   onSuccess?: (verification: PaymentVerification) => void;
   onError?: (error: Error) => void;
   provider?: PaymentProvider;
+  solanaRpcUrl?: string;
   endpoints?: {
     initiate?: string;
     verify?: string;
@@ -100,7 +101,7 @@ export const usePayment = (props: PaymentWidgetProps) => {
       const publicKey = await solana.connect();
       setStatus('pending_signature');
       
-      const signature = await solana.sendPayment(intent); 
+      const signature = await solana.sendPayment(intent, props.solanaRpcUrl); 
       setStatus('verifying');
       await verify(signature);
     } catch (err: any) {

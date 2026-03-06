@@ -1,0 +1,31 @@
+{
+  "name": "@micro-cms/crypto-auth-node",
+  "version": "1.0.32",
+  "description": "Node.js Crypto Authentication Module for Micro-CMS",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup src/index.ts --format cjs,esm --watch --dts"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.91.1",
+    "bs58": "^5.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "tweetnacl": "^1.0.3",
+    "viem": "^2.7.0"
+  },
+  "peerDependencies": {
+    "@micro-cms/core": "workspace:*",
+    "@micro-cms/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.5",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3"
+  }
+}

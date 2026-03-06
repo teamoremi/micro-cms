@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/resource-module",
-  "version": "1.0.30",
+  "version": "1.0.32",
   "description": "Standardized CRUD and Schema routes for Micro-CMS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
