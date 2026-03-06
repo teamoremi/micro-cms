@@ -79,6 +79,8 @@ PACKAGES=(
     "packages/mock-db"
     "packages/node-adapter"
     "packages/crypto-payments"
+    "packages/crypto-auth-node"
+    "packages/crypto-auth-ui"
 )
 
 # --- Step 8: Publish packages ---
