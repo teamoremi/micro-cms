@@ -24,8 +24,18 @@ The project is structured as a pnpm monorepo:
 | [`@micro-cms/resource-module`](./packages/resource-module) | Framework-agnostic CRUD & Schema logic. |
 | [`@micro-cms/express-adapter`](./packages/express-adapter) | Binds CMS modules to Express.js endpoints. |
 | [`@micro-cms/crypto-payments`](./packages/crypto-payments) | Drop-in React widget for blockchain payments. |
+| [`@micro-cms/crypto-auth-node`](./packages/crypto-auth-node) | Node.js Crypto Authentication (Solana/EVM). |
+| [`@micro-cms/crypto-auth-ui`](./packages/crypto-auth-ui) | Composable Crypto Login Widget. |
 | [`@micro-cms/node-adapter`](./packages/node-adapter) | Remote API adapter for Node.js backends. |
 | [`@micro-cms/mock-db`](./packages/mock-db) | In-memory database for rapid prototyping. |
+
+## 💰 Billing & Model Pricing
+
+The system follows a transparent billing strategy for AI models:
+
+- **Reviewed Models**: Listed in `replicate_models.ts` with accurate pricing per token/image/video.
+- **Un-reviewed Models**: Fall back to the maximum cost for the given billing type to ensure system solvency while allowing experimentation.
+- **Real-time Synchronization**: Pricing lists are synchronized from the Node API to Cloudflare Workers via KV storage for low-latency frontend checks.
 
 ## 🚀 Quick Start
 
