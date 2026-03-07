@@ -15,13 +15,17 @@ export class CryptoAuthService {
 
   generateNonce(address: string): string {
     const nonce = Math.floor(Math.random() * 1000000).toString();
-    this.nonces.set(address.toLowerCase(), nonce);
+    // Use raw address for map key to handle case-sensitive Solana addresses
+    this.nonces.set(address, nonce);
     return nonce;
   }
 
   async verifySolana(address: string, signature: string): Promise<string | null> {
-    const nonce = this.nonces.get(address.toLowerCase());
-    if (!nonce) return null;
+    const nonce = this.nonces.get(address);
+    if (!nonce) {
+      console.warn('[@micro-cms/crypto-auth-node] No nonce found for address:', address);
+      return null;
+    }
 
     try {
       const message = new TextEncoder().encode(`Sign this message to authenticate: ${nonce}`);
@@ -31,7 +35,7 @@ export class CryptoAuthService {
       const verified = await this.verifySolanaSignature(message, signatureUint8, publicKeyUint8);
       
       if (verified) {
-        this.nonces.delete(address.toLowerCase());
+        this.nonces.delete(address);
         return this.issueToken(address, 'solana');
       }
     } catch (e) {
@@ -41,15 +45,29 @@ export class CryptoAuthService {
   }
 
   private async verifySolanaSignature(message: Uint8Array, signature: Uint8Array, publicKey: Uint8Array): Promise<boolean> {
-    // In a real implementation, use nacl or @solana/web3.js if it provides it directly
-    // For now, let's assume we use tweetnacl via @solana/web3.js dependency or similar
-    const { sign } = await import('tweetnacl');
-    return sign.detached.verify(message, signature, publicKey);
+    try {
+      const nacl = await import('tweetnacl');
+      // Handle both ES module and CommonJS styles
+      const sign = nacl.sign || (nacl as any).default?.sign;
+      
+      if (!sign || !sign.detached) {
+        throw new Error('tweetnacl sign.detached not found');
+      }
+      
+      return sign.detached.verify(message, signature, publicKey);
+    } catch (e: any) {
+      console.error('[@micro-cms/crypto-auth-node] Internal verification error:', e.message);
+      return false;
+    }
   }
 
   async verifyEVM(address: string, signature: string): Promise<string | null> {
-    const nonce = this.nonces.get(address.toLowerCase());
-    if (!nonce) return null;
+    const addrKey = address.toLowerCase();
+    const nonce = this.nonces.get(addrKey);
+    if (!nonce) {
+      console.warn('[@micro-cms/crypto-auth-node] No nonce found for EVM address:', addrKey);
+      return null;
+    }
 
     try {
       const message = `Sign this message to authenticate: ${nonce}`;
@@ -60,7 +78,7 @@ export class CryptoAuthService {
       });
 
       if (verified) {
-        this.nonces.delete(address.toLowerCase());
+        this.nonces.delete(addrKey);
         return this.issueToken(address, 'evm');
       }
     } catch (e) {

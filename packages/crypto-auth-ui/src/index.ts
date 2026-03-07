@@ -76,13 +76,18 @@ export const useCryptoAuth = (options: CryptoAuthOptions = {}) => {
       });
 
       if (!verifyResp.ok) {
-        throw new Error('Verification failed');
+        const errorData = await verifyResp.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Verification failed');
       }
 
-      const { token } = await verifyResp.json();
+      const data = await verifyResp.json();
       setStatus('success');
-      options.onSuccess?.(token);
-      return token;
+      
+      // Pass the full response object to onSuccess for consistency with other auth methods
+      options.onSuccess?.(data);
+      
+      // Return the token (prefer jwt, fallback to token)
+      return data.jwt || data.token;
     } catch (err: any) {
       setError(err.message || 'Authentication failed');
       setStatus('error');

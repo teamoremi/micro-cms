@@ -55,17 +55,28 @@ export default {
           }
 
           if (token) {
-            // Optional hook to provision user in DB
-            let user = null;
+            let hookResult: any = {};
             if (onVerified) {
               try {
-                user = await onVerified({ address, network, token, req });
+                hookResult = await onVerified({ address, network, token, req });
               } catch (e: any) {
                 console.error('[@micro-cms/crypto-auth-node] onVerified hook failed:', e.message);
               }
             }
-            res.json({ token, user });
-          } else {
+
+            // Standardize: If hookResult is an object, merge it. Use 'jwt' instead of 'token'.
+            // If hookResult contains a jwt, it overrides the default module token.
+            if (hookResult && typeof hookResult === 'object') {
+              res.json({
+                jwt: hookResult.jwt || token,
+                ...hookResult
+              });
+            } else {
+              res.json({ jwt: token, user: hookResult });
+            }
+          }
+
+ else {
             res.status(401).json({ error: 'Verification failed' });
           }
         }

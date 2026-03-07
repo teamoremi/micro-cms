@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/crypto-auth-node",
-  "version": "1.0.32",
+  "version": "1.0.39",
   "description": "Node.js Crypto Authentication Module for Micro-CMS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,6 +1,6 @@
 {
   "name": "@micro-cms/crypto-auth-ui",
-  "version": "1.0.32",
+  "version": "1.0.39",
   "description": "Composable Crypto Authentication Widget for Micro-CMS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
